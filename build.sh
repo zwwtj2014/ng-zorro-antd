@@ -3,9 +3,10 @@
 readonly currentDir=$(cd $(dirname $0); pwd)
 cd ${currentDir}
 rm -rf publish
-cp -r src/components src/__gen_components
-node ./inline-template.js
-node ./less.convert.js
+rm -rf __gen_components
+rm -rf publish-es2015
+cp -r components __gen_components
+node ./build_scripts/inline-template.js
 
 echo 'Compiling to es2015 via Angular compiler'
 $(npm bin)/ngc -p tsconfig-build.json -t es2015 --outDir publish-es2015/src
@@ -35,7 +36,7 @@ mv publish-es2015/esm2015 publish/esm2015
 rm -rf publish-es2015
 
 echo 'Cleaning up temporary files'
-rm -rf src/__gen_components
+rm -rf __gen_components
 rm -rf publish/src/*.js
 rm -rf publish/src/**/*.js
 
@@ -44,5 +45,18 @@ sed -e "s/from '.\//from '.\/src\//g" publish/src/index.d.ts > publish/antd.d.ts
 sed -e "s/\":\".\//\":\".\/src\//g" publish/src/index.metadata.json > publish/antd.metadata.json
 rm publish/src/index.d.ts publish/src/index.metadata.json
 
+echo 'Generate schematics by demos'
+npm run schematic:demo
+
+echo 'Building schematics'
+npm run schematic:demo
+npm run schematic:build
+rm -rf schematics/demo
+
 echo 'Copying package.json'
 cp package.json publish/package.json
+
+echo 'Copying README.md'
+cp README.md publish/README.md
+
+node ./build_scripts/generate-less.js

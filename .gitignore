@@ -2,17 +2,19 @@
 
 # compiled output
 dist/
-doc/
+site/
 tmp/
 out-tsc/
 publish/
 integration/**/lib/
 integration/**/*.ngfactory.ts
 integration/**/*.ngsummary.json
-
+schematics/demo
+schematics/utils/custom-theme.ts
+schematics/utils/lib-versions.ts
 
 # dependencies
-node_modules/
+node_modules
 node_modules.*/
 package-lock.json
 integration/**/package-lock.json
